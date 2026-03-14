@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riverwood Voice Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background: rgba(246, 249, 250, 0.95);
+            width: 440px;
+            height: 650px;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            position: relative;
+
+        }
+
+
+        .header {
+            background: linear-gradient(135deg, #2e383fff, #0b0d02ff);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        .status-bar {
+            background-color: #f0f7f0ff;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            border-bottom: 1px solid #7c98cdff;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #f9f7f7ff;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.arjun {
+            background-color: #1b455eff;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.user {
+            background-color: #f0f0f0;
+            color: #222;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .typing {
+            font-size: 13px;
+            color: #999;
+            padding: 0 20px;
+            height: 20px;
+            font-style: italic;
+        }
+
+        .input-area {
+            padding: 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-area input:focus {
+            border-color: #2e86c1;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .btn-mic {
+            background-color: #5388c3ff;
+            color: white;
+        }
+
+        .btn-mic.recording {
+            background-color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        .btn-stop {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-send {
+            background-color: #1a5276;
+            color: white;
+            border-radius: 24px;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 8px;
+            font-size: 11px;
+            color: #2b273dff;
+            border-top: 1px solid #211745ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Riverwood Estate</h2>
+            <p>Arjun — AI Customer Relations Executive</p>
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            Connecting to Arjun...
+        </div>
+        <div id="startScreen" style="
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255,255,255,0.97);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        z-index: 10;   
+        ">
+        <p style="font-size: 50px; margin-bottom: 10px;">📞</p>
+        <h3 style="color: #1a5276; margin-bottom: 8px; font-size: 18px;">Incoming Call</h3>
+        <p style="color: #555; margin-bottom: 6px; font-size: 14px;">Arjun</p>
+        <p style="color: #999; margin-bottom: 40px; font-size: 13px;">Riverwood Estate — Customer Relations</p>
+        <button onclick="beginCall()" style="
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 30px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(39,174,96,0.4);
+        ">📞 Answer</button>
+        </div>
+        <div class="chat-box" id="chatBox"></div>
+
+        <div class="typing" id="typingIndicator"></div>
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Type your message..."
+            />
+            <button class="btn btn-mic" id="micButton" onclick="toggleRecording()">🎤</button>
+            <button class="btn btn-stop" onclick="stopAudio()">⏹</button>
+            <button class="btn btn-send" onclick="sendMessage()">Send</button>
+        </div>
+
+        <div class="footer">Powered by Riverwood AI CRM</div>
+    </div>
+
+    <script>
+    let audioUnlocked = false;
+
+    document.addEventListener("click", async function() {
+        if (!audioUnlocked) {
+            audioUnlocked = true;
+            const unlock = new Audio();
+            await unlock.play().catch(() => {});
+        }
+    });
+
+    window.onload = function() {
+    // Wait for Answer button click
+    }
+
+    async function beginCall() {
+    console.log("beginCall started");
+    audioUnlocked = true;
+    document.getElementById("startScreen").style.display = "none";
+    console.log("screen hidden");
+    const unlock = new Audio();
+    unlock.play().catch(() => {});
+    console.log("audio unlocked");
+    await startConversation();
+    console.log("conversation started");
+}
+
+    async function startConversation() {
+    console.log("startConversation called");
+    await sendToAgent(
+        "Begin the call. Greet the customer and follow the conversation flow."
+    );
+    console.log("sendToAgent completed");
+    document.getElementById("statusBar").innerText = "🟢 Connected — Arjun is on the line";
+}
+
+    function addMessage(text, sender) {
+        const chatBox = document.getElementById("chatBox");
+        const message = document.createElement("div");
+        message.classList.add("message", sender);
+        message.innerText = text;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function setTyping(isTyping) {
+        const indicator = document.getElementById("typingIndicator");
+        indicator.innerText = isTyping ? "Arjun is typing..." : "";
+    }
+
+    async function sendToAgent(message) {
+        setTyping(true);
+        try {
+            const response = await fetch("/talk", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            setTyping(false);
+            addMessage(data.response, "arjun");
+
+            console.log("audio:", data.audio, "unlocked:", audioUnlocked);
+            if (data.audio && audioUnlocked) {
+                if (window.currentAudio) {
+                    window.currentAudio.pause();
+                    window.currentAudio.currentTime = 0;
+                }
+                window.currentAudio = new Audio(data.audio + "?t=" + Date.now());
+                window.currentAudio.play().catch((e) => {
+                    console.log("Play failed:", e);
+                });
+            }
+
+        } catch (error) {
+            setTyping(false);
+            addMessage("Sorry, I am unable to connect right now. Please try again shortly.", "arjun");
+        }
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("userInput");
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
+        addMessage(userMessage, "user");
+        input.value = "";
+        await sendToAgent(userMessage);
+    }
+
+    function stopAudio() {
+        if (window.currentAudio) {
+            window.currentAudio.pause();
+            window.currentAudio.currentTime = 0;
+        }
+    }
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    async function toggleRecording() {
+        if (!isRecording) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+
+    async function startRecording() {
+        audioUnlocked = true;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            await sendAudioToServer(audioBlob);
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        document.getElementById("micButton").classList.add("recording");
+        document.getElementById("statusBar").innerText = "🔴 Recording... Click 🎤 to stop";
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        isRecording = false;
+        document.getElementById("micButton").classList.remove("recording");
+        document.getElementById("statusBar").innerText = "🟢 Connected — Arjun is on the line";
+    }
+
+    async function sendAudioToServer(audioBlob) {
+        setTyping(true);
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "recording.webm");
+
+        const transcribeResponse = await fetch("/transcribe", {
+            method: "POST",
+            body: formData
+        });
+
+        const transcribeData = await transcribeResponse.json();
+        const userText = transcribeData.text;
+
+        if (userText) {
+            addMessage(userText, "user");
+            await sendToAgent(userText);
+        } else {
+            setTyping(false);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("userInput")
+            .addEventListener("keypress", function(e) {
+                if (e.key === "Enter") {
+                    sendMessage();
+                }
+            });
+    });
+</script>
+</body>
+</html>
