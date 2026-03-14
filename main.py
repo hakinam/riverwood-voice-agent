@@ -115,7 +115,6 @@ async def talk(request: Request):
     }
       
       response = requests.post(url, headers=headers, json=data)
-      print("ElevenLabs status:", response.status_code, response.text[:200])
       response = requests.post(url, headers=headers, json=data)
       
       audio_path = "static/response.mp3"
@@ -153,21 +152,10 @@ async def transcribe(audio: UploadFile = File(...)):
     os.unlink(tmp_path)
     
     return JSONResponse({"text": transcription.text})
+  
+  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
 
 

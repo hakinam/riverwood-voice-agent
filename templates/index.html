@@ -252,23 +252,19 @@
     }
 
     async function beginCall() {
-    console.log("beginCall started");
+    
     audioUnlocked = true;
     document.getElementById("startScreen").style.display = "none";
-    console.log("screen hidden");
     const unlock = new Audio();
     unlock.play().catch(() => {});
-    console.log("audio unlocked");
     await startConversation();
-    console.log("conversation started");
+    
 }
 
     async function startConversation() {
-    console.log("startConversation called");
     await sendToAgent(
         "Begin the call. Greet the customer and follow the conversation flow."
     );
-    console.log("sendToAgent completed");
     document.getElementById("statusBar").innerText = "🟢 Connected — Arjun is on the line";
 }
 
@@ -299,7 +295,6 @@
             setTyping(false);
             addMessage(data.response, "arjun");
 
-            console.log("audio:", data.audio, "unlocked:", audioUnlocked);
             if (data.audio && audioUnlocked) {
                 if (window.currentAudio) {
                     window.currentAudio.pause();
@@ -307,7 +302,6 @@
                 }
                 window.currentAudio = new Audio(data.audio + "?t=" + Date.now());
                 window.currentAudio.play().catch((e) => {
-                    console.log("Play failed:", e);
                 });
             }
 
