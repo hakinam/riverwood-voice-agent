@@ -20,4 +20,4 @@ customer relations CRM system.
 1. Clone the repository
 2. Install dependencies: `pip3 install -r requirements.txt`
 3. Create .env file with your API keys
-4. Run: `uvicorn main:app --reload`
+4. Run: `uvicorn main:app --reload` 
