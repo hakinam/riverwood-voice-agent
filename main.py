@@ -115,7 +115,6 @@ async def talk(request: Request):
     }
       
       response = requests.post(url, headers=headers, json=data)
-      response = requests.post(url, headers=headers, json=data)
       
       audio_path = "static/response.mp3"
       with open(audio_path, "wb") as f:
