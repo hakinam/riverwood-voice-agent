@@ -25,8 +25,3 @@ customer relations CRM system.
 - Groq LLaMA 3.3 — LLM for conversation
 - ElevenLabs — Natural voice synthesis
 - FastAPI — Browser demo backend (v1)
-
-## Scaling
-Queue based parallel processing using AWS SQS and 
-AWS Lambda. 50 parallel workers complete 1000 calls 
-in under 40 minutes at ~$125 per 1000 calls.
