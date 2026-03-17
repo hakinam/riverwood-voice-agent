@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from assistant import ARJUN_ASSISTANT
+from assistant import MAYA_ASSISTANT
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ def make_call(phone_number):
         "customer": {
             "number": phone_number
         },
-        "assistant": ARJUN_ASSISTANT
+        "assistant": MAYA_ASSISTANT
     }
     
     response = requests.post(url, headers=headers, json=data)
@@ -27,5 +27,5 @@ def make_call(phone_number):
     return response.json()
 
 if __name__ == "__main__":
-    phone_number = input("Enter phone number to call (with country code e.g. +919876543210): ")
+    phone_number = input("Enter phone number to call along with the country code: ")
     make_call(phone_number)
