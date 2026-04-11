@@ -1,3 +1,48 @@
+# Riverwood Estate — AI Voice Agent
+
+An end to end AI powered outbound calling system built for Riverwood Estate's 
+customer relations workflow. The agent autonomously calls customers, holds 
+natural conversations about construction updates, and handles site visit 
+scheduling, no human operator required.
+
+## Demo
+
+> Live outbound call demo available on request.
+
+## What it Does
+
+- Automatically initiates outbound phone calls to customers
+- Greets naturally, confirms the customer's name
+- Shares real-time construction progress updates
+- Enquires about and assists with site visit scheduling
+- Handles unexpected questions honestly and gracefully
+- Closes calls warmly and professionally
+
+## System Architecture
+┌─────────────────────────────────────────────────┐
+│                   Operator / CRM                │
+│           (Customer phone number input)         │
+└──────────────────────┬──────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────┐
+│                  VAPI Platform                  │
+│         (Voice agent orchestration layer)       │
+└──────┬───────────────────────────┬──────────────┘
+│                           │
+▼                           ▼
+┌─────────────┐           ┌────────────────────┐
+│   Twilio    │           │  Groq LLaMA 3.3    │
+│ (Telephony) │           │  (LLM — Response   │
+│  Outbound   │           │   Generation)      │
+│   Calling   │           └────────────────────┘
+└─────────────┘                    │
+▼
+┌────────────────────┐
+│    ElevenLabs      │
+│  (Text-to-Speech   │
+│  Voice Synthesis)  │
+└────────────────────┘
 ### How It Works
 
 1. Operator inputs the customer's phone number
@@ -8,7 +53,6 @@
 6. ElevenLabs synthesises the response into a human-like voice
 7. The audio is streamed back to the customer — the loop continues
 
----
 
 ## Version History
 
